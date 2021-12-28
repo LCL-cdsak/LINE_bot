@@ -1,6 +1,6 @@
 import os
 import sys
-
+import pygraphviz
 from flask import Flask, jsonify, request, abort, send_file
 from dotenv import load_dotenv
 from linebot import LineBotApi, WebhookParser
@@ -54,6 +54,7 @@ parser = WebhookParser(channel_secret)
 
 @app.route("/callback", methods=["POST"])
 def callback():
+    print(777)
     signature = request.headers["X-Line-Signature"]
     # get request body as text
     body = request.get_data(as_text=True)
@@ -107,8 +108,7 @@ def webhook_handler():
             send_text_message(event.reply_token, "Not Entering any State")
 
     return "OK"
-
-
+    
 @app.route("/show-fsm", methods=["GET"])
 def show_fsm():
     machine.get_graph().draw("fsm.png", prog="dot", format="png")
