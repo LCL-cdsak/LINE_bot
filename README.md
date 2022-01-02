@@ -10,6 +10,9 @@
 ## QR-code
 ![fsm](./img/QR-code.png)
 
+## FSM diagram
+![fsm](./img/FSM.png)
+
 ## 1.開始功能選單
 ![fsm](./img/1.jpg)
 (1).按下開始使用可以進到資訊選擇欄
