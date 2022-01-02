@@ -1,6 +1,6 @@
 from transitions.extensions import GraphMachine
 from linebot import LineBotApi
-from utils import send_text_message,send_button_message,send_CarouselColumn_message,send_multiple_text_message
+from utils import send_text_message,send_button_message,send_CarouselColumn_message,send_multiple_text_message,send_image_message
 from linebot.models import (
     MessageEvent,
     TextSendMessage,
@@ -10,7 +10,8 @@ from linebot.models import (
     CarouselTemplate, 
     CarouselColumn,
     URIAction,
-    MessageAction
+    MessageAction,
+    ImageSendMessage
 )
 from linebot import LineBotApi
 import requests
@@ -137,8 +138,8 @@ class TocMachine(GraphMachine):
                 text ='開始使用'
             ),
             MessageTemplateAction(
-                label = 'fsm graph',
-                text ='fsm graph'
+                label = 'fsm_graph',
+                text ='fsm_graph'
             ),
             MessageTemplateAction(
                 label = 'github',
@@ -298,4 +299,26 @@ class TocMachine(GraphMachine):
         )
         )
         )
+        line_bot_api.reply_message(event.reply_token, result)
+    def on_enter_fsm_graph(self,event):
+        line_bot_api = LineBotApi(os.getenv("LINE_CHANNEL_ACCESS_TOKEN", None))
+        result = []
+        message = ImageSendMessage(
+        original_content_url = "https://imgur.com/y4g1iAY.png",
+        preview_image_url = "https://imgur.com/y4g1iAY.png"
+        )
+        result.append(message)
+        result.append(
+        TemplateSendMessage(
+        alt_text='button template',
+        template = ButtonsTemplate(
+            title = "請選擇想使用的功能",
+            text = " ",
+            actions = [
+            MessageTemplateAction(
+                label = '返回功能選單',
+                text ='返回功能選單'
+            ),],
+            thumbnail_image_url= "https://imgur.com/Daaf6o9.png"
+        )))
         line_bot_api.reply_message(event.reply_token, result)

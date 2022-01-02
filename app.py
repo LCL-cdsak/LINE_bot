@@ -217,8 +217,8 @@ def webhook_handler():
                         text ='開始使用'
                     ),
                     MessageTemplateAction(
-                        label = 'fsm graph',
-                        text ='fsm graph'
+                        label = 'fsm_graph',
+                        text ='fsm_graph'
                     ),
                     MessageTemplateAction(
                         label = 'github',
