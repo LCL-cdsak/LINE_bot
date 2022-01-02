@@ -1,3 +1,35 @@
+# 即時資訊小幫手
+
+## 1.開始功能選單
+![fsm](./img/1.jpg)
+(1).按下開始使用可以進到資訊選擇欄
+
+(2).按下fsm graph可以看到machine的state diagram
+
+(3).按下github會進入此project的repo
+
+## 2.主選單
+![fsm](./img/2.jpg)
+根據所需的資訊，選擇"天氣"、"udn新聞"、"成大即時新聞"
+
+## 3.天氣資訊
+![fsm](./img/3.jpg)
+選擇"天氣"，bot會請使用者輸入城市名稱，並顯示該城市未來36小時的天氣
+## 4.成大即時資訊
+![fsm](./img/4.jpg)
+選擇"成大即時新聞"，bot會請使用者輸入欲查閱的數量，並推送成功大學即時新聞網的近期新聞，如下圖所示
+![fsm](./img/5.jpg)
+
+## 5.全球即時新聞
+![fsm](./img/6.jpg)
+選擇"udn新聞"，bot會請使用者從4類別新聞選擇一種，下圖為選擇"運動"類別的範例，bot會向使用者推送最新的5則運動相關新聞
+![fsm](./img/7.jpg)
+若點選任一卡片的"查看大綱"按鈕，bot會回傳該新聞的簡短摘要，如下所示
+![fsm](./img/8.jpg)
+最右邊卡片可讓使用者選擇回去使用其他系統功能
+![fsm](./img/9.jpg)
+
+
 # TOC Project 2020
 
 [![Maintainability](https://api.codeclimate.com/v1/badges/dc7fa47fcd809b99d087/maintainability)](https://codeclimate.com/github/NCKU-CCS/TOC-Project-2020/maintainability)
