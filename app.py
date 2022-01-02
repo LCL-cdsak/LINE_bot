@@ -20,7 +20,7 @@ from utils import send_text_message,send_button_message
 load_dotenv()
 
 machine = TocMachine(
-    states=["init","fsm_graph","github","choose_information","choose_city","weather","choose_news_numbers","news","sport","global","breaknews","society"
+    states=["init","fsm_graph","choose_information","choose_city","weather","choose_news_numbers","news","sport","global","breaknews","society"
     ,"show_1_news","show_3_news","show_5_news","return"],
     transitions=[
         {
@@ -28,12 +28,6 @@ machine = TocMachine(
             "source": "init",
             "dest": "fsm_graph",
             "conditions": "is_going_to_fsm_graph",
-        },
-        {
-            "trigger": "advance",
-            "source": "init",
-            "dest": "github",
-            "conditions": "is_going_to_github",
         },
         {
             "trigger": "advance",
@@ -115,19 +109,19 @@ machine = TocMachine(
         },
         {
             "trigger": "advance",
-            "source": ["fsm_graph","github","choose_information","weather","sport","global","breaknews","society","show_1_news","show_3_news","show_5_news"],
+            "source": ["fsm_graph","choose_information","weather","sport","global","breaknews","society","show_1_news","show_3_news","show_5_news"],
             "dest": "init",
             "conditions": "is_going_to_init",
         },
         {
             "trigger": "advance",
-            "source": ["fsm_graph","github","weather","sport","global","breaknews","society","choose_news_numbers","show_1_news","show_3_news","show_5_news"],
+            "source": ["fsm_graph","weather","sport","global","breaknews","society","choose_news_numbers","show_1_news","show_3_news","show_5_news"],
             "dest": "choose_information",
             "conditions": "is_going_to_back_choose_information",
         },
         {
             "trigger": "advance",
-            "source": ["fsm_graph","github","choose_information","choose_city","weather","choose_news_numbers","news","sport","global","breaknews","society"
+            "source": ["fsm_graph","choose_information","choose_city","weather","choose_news_numbers","news","sport","global","breaknews","society"
     ,"show_1_news","show_3_news","show_5_news","return"],
             "dest": "init",
             "conditions": "is_going_to_return",
@@ -220,10 +214,10 @@ def webhook_handler():
                         label = 'fsm_graph',
                         text ='fsm_graph'
                     ),
-                    MessageTemplateAction(
-                        label = 'github',
-                        text = 'github'
-                    ),
+                    URIAction(
+                                label = 'github',
+                                uri = 'https://github.com/LCL-cdsak/LINE_bot'
+                            )
                 ]
                 send_button_message(event.reply_token, title, text, btn,"https://imgur.com/YFQlysd.png")
             elif machine.state=="choose_city":

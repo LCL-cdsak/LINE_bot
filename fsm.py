@@ -141,10 +141,10 @@ class TocMachine(GraphMachine):
                 label = 'fsm_graph',
                 text ='fsm_graph'
             ),
-            MessageTemplateAction(
-                label = 'github',
-                text = 'github'
-            ),
+            URIAction(
+                    label = 'github',
+                    uri = 'https://github.com/LCL-cdsak/LINE_bot'
+            )
         ]
         send_button_message(event.reply_token, title, text, btn,"https://imgur.com/YFQlysd.png")
     def on_enter_choose_news_numbers(self,event):
@@ -318,6 +318,10 @@ class TocMachine(GraphMachine):
             MessageTemplateAction(
                 label = '返回功能選單',
                 text ='返回功能選單'
+            ),
+            MessageTemplateAction(
+                label = '返回資訊選單',
+                text ='返回資訊選單'
             ),],
             thumbnail_image_url= "https://imgur.com/Daaf6o9.png"
         )))
