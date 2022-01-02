@@ -304,8 +304,8 @@ class TocMachine(GraphMachine):
         line_bot_api = LineBotApi(os.getenv("LINE_CHANNEL_ACCESS_TOKEN", None))
         result = []
         message = ImageSendMessage(
-        original_content_url = "https://imgur.com/y4g1iAY.png",
-        preview_image_url = "https://imgur.com/y4g1iAY.png"
+        original_content_url = "https://imgur.com/RkEGDo5.png",
+        preview_image_url = "https://imgur.com/RkEGDo5.png"
         )
         result.append(message)
         result.append(
