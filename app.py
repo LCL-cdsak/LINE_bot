@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 from linebot import LineBotApi, WebhookParser
 from linebot.exceptions import InvalidSignatureError
 from linebot.models import MessageEvent, TextMessage, TextSendMessage,URIAction
+from machine import create_machine
 from linebot.models import (
     MessageEvent,
     TextSendMessage,
@@ -19,118 +20,8 @@ from utils import send_text_message,send_button_message
 
 load_dotenv()
 
-machine = TocMachine(
-    states=["init","fsm_graph","choose_information","choose_city","weather","choose_news_numbers","news","sport","global","breaknews","society"
-    ,"show_1_news","show_3_news","show_5_news","return"],
-    transitions=[
-        {
-            "trigger": "advance",
-            "source": "init",
-            "dest": "fsm_graph",
-            "conditions": "is_going_to_fsm_graph",
-        },
-        {
-            "trigger": "advance",
-            "source": "init",
-            "dest": "choose_information",
-            "conditions": "is_going_to_choose_information",
-        },
-        {
-            "trigger": "advance",
-            "source": "choose_information",
-            "dest": "news",
-            "conditions": "is_going_to_news",
-        },
-        {
-            "trigger": "advance",
-            "source": "choose_information",
-            "dest": "choose_city",  
-            "conditions": "is_going_to_choose_city",
-        },
-        {
-            "trigger": "advance",
-            "source": "choose_city",
-            "dest": "weather",  
-            "conditions": "is_going_to_weather",
-        },
-        {
-            "trigger": "advance",
-            "source": "weather",
-            "dest": "choose_city",
-            "conditions": "is_going_to_back_choose_city",
-        },
-        {
-            "trigger": "advance",
-            "source": "choose_information",
-            "dest": "choose_news_numbers",
-            "conditions": "is_going_to_choose_news_numbers",
-        },
-        {
-            "trigger": "advance",
-            "source": "choose_news_numbers",
-            "dest": "show_1_news",
-            "conditions": "is_going_to_show_1_news",
-        },
-        {
-            "trigger": "advance",
-            "source": "choose_news_numbers",
-            "dest": "show_3_news",
-            "conditions": "is_going_to_show_3_news",
-        },
-        {
-            "trigger": "advance",
-            "source": "choose_news_numbers",
-            "dest": "show_5_news",
-            "conditions": "is_going_to_show_5_news",
-        },
-        {
-            "trigger": "advance",
-            "source": "news",
-            "dest": "sport",
-            "conditions": "is_going_to_sport",
-        },
-        {
-            "trigger": "advance",
-            "source": "news",
-            "dest": "global",
-            "conditions": "is_going_to_global",
-        },
-        {
-            "trigger": "advance",
-            "source": "news",
-            "dest": "breaknews",
-            "conditions": "is_going_to_breaknews",
-        },
-        {
-            "trigger": "advance",
-            "source": "news",
-            "dest": "society",
-            "conditions": "is_going_to_society",
-        },
-        {
-            "trigger": "advance",
-            "source": ["fsm_graph","choose_information","weather","sport","global","breaknews","society","show_1_news","show_3_news","show_5_news"],
-            "dest": "init",
-            "conditions": "is_going_to_init",
-        },
-        {
-            "trigger": "advance",
-            "source": ["fsm_graph","weather","sport","global","breaknews","society","choose_news_numbers","show_1_news","show_3_news","show_5_news"],
-            "dest": "choose_information",
-            "conditions": "is_going_to_back_choose_information",
-        },
-        {
-            "trigger": "advance",
-            "source": ["fsm_graph","choose_information","choose_city","weather","choose_news_numbers","news","sport","global","breaknews","society"
-    ,"show_1_news","show_3_news","show_5_news","return"],
-            "dest": "init",
-            "conditions": "is_going_to_return",
-        },
-    ],
-    initial="init",
-    auto_transitions=False,
-    show_conditions=True,
-)
+machines = {}
+m = create_machine()
 #machine.get_graph().draw("./img/fsm.jpg", prog="dot", format="jpg")
 
 app = Flask(__name__, static_url_path="")
@@ -168,7 +59,7 @@ def callback():
             continue
         if not isinstance(event.message, TextMessage):
             continue
-
+        
         line_bot_api.reply_message(
             event.reply_token, TextSendMessage(text=event.message.text)
         )
@@ -197,11 +88,11 @@ def webhook_handler():
             continue
         if not isinstance(event.message.text, str):
             continue
-        print(f"\nFSM STATE: {machine.state}")
-        print(f"REQUEST BODY: \n{body}")
-        response = machine.advance(event)
+        if event.source.user_id not in machines:
+            machines[event.source.user_id] = create_machine()
+        response = machines[event.source.user_id].advance(event)
         if response == False:
-            if machine.state=="init":
+            if machines[event.source.user_id].state=="init":
                 #send_text_message(event.reply_token,"rechoose city")
                 title="\t\t選擇你想使用的功能"
                 text=" "
@@ -220,15 +111,15 @@ def webhook_handler():
                             )
                 ]
                 send_button_message(event.reply_token, title, text, btn,"https://imgur.com/YFQlysd.png")
-            elif machine.state=="choose_city":
+            elif machines[event.source.user_id].state=="choose_city":
                 send_text_message(event.reply_token,"請輸入正確的城市名稱，或輸入\"menu\"返回主選單")
-            elif machine.state!="sport" and machine.state!="breaknews" and machine.state!="global" and machine.state!="society":
+            elif machines[event.source.user_id].state!="sport" and machines[event.source.user_id].state!="breaknews" and machines[event.source.user_id].state!="global" and machines[event.source.user_id].state!="society":
                 send_text_message(event.reply_token,"請依照功能選單點選，或輸入\"menu\"返回主選單")
     return "OK"
     
 @app.route("/show-fsm", methods=["GET"])
 def show_fsm():
-    machine.get_graph().draw("fsm.png", prog="dot", format="png")
+    m.get_graph().draw("fsm.png", prog="dot", format="png")
     return send_file("fsm.png", mimetype="image/png")
 
 
